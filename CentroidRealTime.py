@@ -7,24 +7,24 @@ def nothing(x):
     pass
 
 
-cv2.namedWindow('slider')
-cv2.createTrackbar('HMax', 'slider', 0, 255, nothing)
-cv2.createTrackbar('HMin', 'slider', 0, 255, nothing)
-cv2.createTrackbar('VMax', 'slider', 0, 255, nothing)
-cv2.createTrackbar('VMin', 'slider', 0, 255, nothing)
-cv2.createTrackbar('SMax', 'slider', 0, 255, nothing)
-cv2.createTrackbar('SMin', 'slider', 0, 255, nothing)
+cv2.namedWindow('Frame')
+cv2.createTrackbar('HMax', 'Frame', 0, 255, nothing)
+cv2.createTrackbar('HMin', 'Frame', 0, 255, nothing)
+cv2.createTrackbar('VMax', 'Frame', 0, 255, nothing)
+cv2.createTrackbar('VMin', 'Frame', 0, 255, nothing)
+cv2.createTrackbar('SMax', 'Frame', 0, 255, nothing)
+cv2.createTrackbar('SMin', 'Frame', 0, 255, nothing)
 
 # Crear el kernel para erosionar y dilatar
 kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
 
 while True:
-    HMax = cv2.getTrackbarPos('HMax', 'slider')
-    HMin = cv2.getTrackbarPos('HMin', 'slider')
-    VMax = cv2.getTrackbarPos('VMax', 'slider')
-    VMin = cv2.getTrackbarPos('VMin', 'slider')
-    SMax = cv2.getTrackbarPos('SMax', 'slider')
-    SMin = cv2.getTrackbarPos('SMin', 'slider')
+    HMax = cv2.getTrackbarPos('HMax', 'Frame')
+    HMin = cv2.getTrackbarPos('HMin', 'Frame')
+    VMax = cv2.getTrackbarPos('VMax', 'Frame')
+    VMin = cv2.getTrackbarPos('VMin', 'Frame')
+    SMax = cv2.getTrackbarPos('SMax', 'Frame')
+    SMin = cv2.getTrackbarPos('SMin', 'Frame')
 
     available, frame = captura.read()
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
