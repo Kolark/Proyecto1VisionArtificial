@@ -2,9 +2,8 @@ import cv2
 import numpy as np
 print("UTILS IMPORTED")
 class Characteristics:
-    def __init__(self):
-        print("UTILS CLASS CREATED")
-    def findCentroid(self,segmentedImage):
+    @staticmethod
+    def findCentroid(segmentedImage):
         height,width = segmentedImage.shape
         returnImage = np.zeros((height,width))
         returnImage += segmentedImage
@@ -24,6 +23,6 @@ class Characteristics:
 
         cv2.circle(returnImage, (int(cX), int(cY)), 5, (255, 255, 255), -1)
         cv2.putText(returnImage, message, (int(cX) - 25, int(cY) - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
-        return cX,cY,returnImage
+        return cX,cY,message
 
 

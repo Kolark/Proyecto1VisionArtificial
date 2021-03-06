@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>855</width>
-    <height>812</height>
+    <width>987</width>
+    <height>806</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,7 +40,7 @@
         <widget class="QLabel" name="labelCalibration">
          <property name="styleSheet">
           <string notr="true">background-color: rgb(133, 255, 147);
-border: 10px solid rgb(0, 200, 255);
+
 </string>
          </property>
          <property name="text">
@@ -51,7 +51,7 @@ border: 10px solid rgb(0, 200, 255);
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <widget class="QLabel" name="label_9">
+          <widget class="QLabel" name="labelcolormin">
            <property name="styleSheet">
             <string notr="true">background-color: rgb(255, 0, 4);</string>
            </property>
@@ -64,7 +64,7 @@ border: 10px solid rgb(0, 200, 255);
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_8">
+          <widget class="QLabel" name="labelcolormax">
            <property name="styleSheet">
             <string notr="true">background-color: rgb(0, 174, 255);</string>
            </property>
@@ -87,8 +87,8 @@ border: 10px solid rgb(0, 200, 255);
      <rect>
       <x>300</x>
       <y>40</y>
-      <width>500</width>
-      <height>500</height>
+      <width>640</width>
+      <height>480</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -296,7 +296,7 @@ border: 10px solid rgb(0, 200, 255);
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>855</width>
+     <width>987</width>
      <height>26</height>
     </rect>
    </property>

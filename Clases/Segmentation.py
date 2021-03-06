@@ -5,7 +5,7 @@ class Segmentation:
 
     """Clase para realizar la segmentación con los valores otorgados por la calibración"""
 
-    def __init__(self, HMin, VMin, SMin, HMax, VMax, SMax):
+    def __init__(self, HMin, SMin, VMin, HMax, SMax, VMax):
         """
         :param HMin: Minimum Hue
         :param VMin: Minimum Brightness

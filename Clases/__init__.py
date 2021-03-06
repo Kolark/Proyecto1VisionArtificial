@@ -1,3 +1,4 @@
 print("Importing Classes")
-from . import Tools
-from . import Segmentation
+from . import tools
+from . import segmentation
+from . import calibration
