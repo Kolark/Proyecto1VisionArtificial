@@ -43,8 +43,8 @@ class UIWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.labelcolormin.setStyleSheet(f"background-color: hsv({self.HSVMIN[0]*2},{self.HSVMIN[1]},{self.HSVMIN[2]})") 
         self.labelcolormax.setStyleSheet(f"background-color: hsv({self.HSVMAX[0]*2},{self.HSVMAX[1]},{self.HSVMAX[2]})")
         self.hasCalibrated = True
-        # self.segment = Clases.segmentation.Segmentation(*self.HSVMIN,*self.HSVMAX)
-        self.segment = Clases.segmentation.Segmentation(45,50,50,75,200,200)
+        self.segment = Clases.segmentation.Segmentation(*self.HSVMIN,*self.HSVMAX)
+        # self.segment = Clases.segmentation.Segmentation(45,50,50,75,200,200)
     def Ejecutar(self):
         print("ah")
     
@@ -54,7 +54,7 @@ class UIWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     # read imageS in BGR format
         disponible, fotograma = captura.read()
         fotograma = cv2.flip(fotograma,1)
-
+        fotograma = Clases.tools.Quality.makebetter(fotograma)
         h, w, channel = fotograma.shape    
         self.ROI = np.array(fotograma[h//2-60:h//2+60,w//2-60:w//2+60])
     # convert image to RGB format

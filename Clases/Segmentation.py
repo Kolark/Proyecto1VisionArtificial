@@ -38,8 +38,8 @@ class Segmentation:
 
         # Crear la máscara con los valores máximos y mínimos del hsv
         # Utilizando el hsv blurreado para mayor presición
-        mask = cv2.inRange(hsv, (self.HMin, self.VMin, self.SMin),
-                           (self.HMax, self.VMax, self.SMax))
+        mask = cv2.inRange(hsv, (self.HMin, self.SMin, self.VMin),
+                           (self.HMax, self.SMax, self.VMax))
         # Utilizar MORPH_OPEN (erosionar -> dilatar) utilizando el kernel
         mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, self.kernel)
 
