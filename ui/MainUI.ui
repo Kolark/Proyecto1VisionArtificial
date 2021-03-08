@@ -53,7 +53,7 @@
          <item>
           <widget class="QLabel" name="labelcolormin">
            <property name="styleSheet">
-            <string notr="true">background-color: rgb(255, 0, 4);</string>
+            <string notr="true">background-color: hsv(100, 100, 100);</string>
            </property>
            <property name="text">
             <string>colorMIN</string>

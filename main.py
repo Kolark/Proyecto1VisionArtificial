@@ -49,8 +49,6 @@ class UIWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         print("ah")
     
     def viewCam(self):
-    
-        print("Viewing Cam")
     # read imageS in BGR format
         disponible, fotograma = captura.read()
         fotograma = cv2.flip(fotograma,1)
@@ -62,6 +60,10 @@ class UIWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.hasCalibrated:
             self.segmentedIMG = self.segment.segmentate(fotograma)
             self.posX,self.posY,self.message = Clases.tools.Characteristics.findCentroid(self.segmentedIMG)
+            
+            if self.message != "Centroid Not Found":
+                print("posx : " + str(self.posX))
+                Clases.mousepos.MoveMouse(self.posX,w,self.posY,h)
 
             cv2.circle(fotogramaRGB, (int(self.posX), int(self.posY)), 5, (255, 255, 255), -1)
             cv2.putText(fotogramaRGB, self.message, (int(self.posX) - 25, int(self.posY) - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
@@ -70,12 +72,18 @@ class UIWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         ROIRGB = cv2.cvtColor(self.ROI, cv2.COLOR_BGR2RGB)
         self.SetImages(fotogramaRGB,self.qlabel)
         self.SetImages(ROIRGB,self.labelCalibration)
+
+
+
     def SetImages(self,IMG,label):
         h, w, channel = IMG.shape        
         step = channel * w
         
         qImg = QImage(IMG.data, w, h, step, QImage.Format_RGB888)
         label.setPixmap(QPixmap.fromImage(qImg))
+
+
+        
 
     def controlTimer(self):
         # if timer is stopped
