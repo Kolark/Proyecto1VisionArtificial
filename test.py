@@ -5,8 +5,8 @@ captura = cv2.VideoCapture(0)
 def nothing(x):
     pass
 cv2.namedWindow('slider')
-cv2.createTrackbar('HMax','slider',0,180,nothing)
-cv2.createTrackbar('HMin','slider',0,180,nothing)
+cv2.createTrackbar('HMax','slider',0,255,nothing)
+cv2.createTrackbar('HMin','slider',0,255,nothing)
 cv2.createTrackbar('VMax','slider',0,255,nothing)
 cv2.createTrackbar('VMin','slider',0,255,nothing)
 cv2.createTrackbar('SMax','slider',0,255,nothing)

@@ -26,3 +26,22 @@ class Characteristics:
         return cX,cY,message
 
 
+class Quality:
+    @staticmethod
+    def makebetter(img):
+        b,g,r = cv2.split(img)
+        bMin,bDelta = Quality.Encontrar(b)
+        gMin,gDelta = Quality.Encontrar(g)
+        rMin,rDelta = Quality.Encontrar(r)
+
+        b = cv2.subtract(b,bMin)
+        g = cv2.subtract(g,gMin)
+        r = cv2.subtract(r,rMin)
+
+        salida = cv2.merge((b,g,r))
+        return salida
+    @staticmethod
+    def Encontrar(imagen):
+        minimo,maximo, ret, ret = cv2.minMaxLoc(imagen)
+        delta = 255/(maximo-minimo)
+        return minimo,delta
