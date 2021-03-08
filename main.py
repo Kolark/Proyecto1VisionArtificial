@@ -8,6 +8,8 @@ from PyQt5.QtCore import QTimer
 import Clases
 import cv2
 import numpy as np
+import queue
+from collections import deque
 chars = Clases.tools.Characteristics()
 
 #.ui file path
@@ -28,11 +30,17 @@ class UIWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.btnEmpezar.clicked.connect(self.controlTimer)
         self.timer.timeout.connect(self.viewCam)
         self.hasCalibrated = False
+        self.ftgmas = deque()
     def printxd(self):
         print("calibrado")
     
     def Calibrar(self):
+        # print("Tamaño: "  + str(len(self.ftgmas)))
         
+        # sumatoria = np.zeros(self.ftgmas[0].size)
+        # for i in range(5):
+        #     sumatoria = cv2.add(sumatoria,np.array(self.ftgmas[i]))
+        # sumatoria = cv2.multiply(sumatoria,0.2)
         self.HSVMIN,self.HSVMAX = Clases.calibration.CalibrationClass.Calibrate(self.ROI)
         self.labelhuemin.setText(str(self.HSVMIN[0]))
         self.labelhuemax.setText(str(self.HSVMAX[0]))
@@ -52,9 +60,24 @@ class UIWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     # read imageS in BGR format
         disponible, fotograma = captura.read()
         fotograma = cv2.flip(fotograma,1)
-        fotograma = Clases.tools.Quality.makebetter(fotograma)
+        
+
+
+
+        # fotograma = Clases.tools.Quality.makebetter(fotograma)
+
         h, w, channel = fotograma.shape    
         self.ROI = np.array(fotograma[h//2-60:h//2+60,w//2-60:w//2+60])
+
+
+        if len(self.ftgmas) < 5:
+            self.ftgmas.append(self.ROI)
+            
+        else:
+            self.ftgmas.popleft()
+            self.ftgmas.append(self.ROI)
+
+        
     # convert image to RGB format
         fotogramaRGB = cv2.cvtColor(fotograma, cv2.COLOR_BGR2RGB)
         if self.hasCalibrated:
@@ -62,9 +85,10 @@ class UIWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.posX,self.posY,self.message = Clases.tools.Characteristics.findCentroid(self.segmentedIMG)
             
             if self.message != "Centroid Not Found":
-                print("posx : " + str(self.posX))
+                # print("posx : " + str(self.posX))
                 Clases.mousepos.MoveMouse(self.posX,w,self.posY,h)
-
+                # Clases.mousepos.MoveMouse(w//2,w,h//2,h)
+            
             cv2.circle(fotogramaRGB, (int(self.posX), int(self.posY)), 5, (255, 255, 255), -1)
             cv2.putText(fotogramaRGB, self.message, (int(self.posX) - 25, int(self.posY) - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
        
@@ -91,7 +115,7 @@ class UIWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # create video capture
             self.cap = cv2.VideoCapture(0)
             # start timer
-            self.timer.start(30)
+            self.timer.start(16)
             # update control_bt text
             self.btnEmpezar.setText("Parar")
         else:
