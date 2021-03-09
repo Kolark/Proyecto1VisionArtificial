@@ -31,6 +31,7 @@ class UIWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.timer.timeout.connect(self.viewCam)
         self.hasCalibrated = False
         self.ftgmas = deque()
+        self.inputStatesclass = Clases.mousepos.inputStates()
     def printxd(self):
         print("calibrado")
     
@@ -62,8 +63,10 @@ class UIWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         fotograma = cv2.flip(fotograma,1)
         
 
-
-
+        self.upPos  = self.upSlider.value()
+        self.downPos  = self.downSlider.value()
+        self.leftPos  = self.leftSlider.value()
+        self.rightPos  = self.rightSlider.value()
         # fotograma = Clases.tools.Quality.makebetter(fotograma)
 
         h, w, channel = fotograma.shape    
@@ -86,13 +89,22 @@ class UIWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             
             if self.message != "Centroid Not Found":
                 # print("posx : " + str(self.posX))
-                Clases.mousepos.MoveMouse(self.posX,w,self.posY,h)
+                # Clases.mousepos.MoveMouse(self.posX,w,self.posY,h)
+                self.inputStatesclass.EvalInputs(self.posX,w,self.posY,h,self.upPos,self.downPos,self.leftPos,self.rightPos,125)
                 # Clases.mousepos.MoveMouse(w//2,w,h//2,h)
             
             cv2.circle(fotogramaRGB, (int(self.posX), int(self.posY)), 5, (255, 255, 255), -1)
             cv2.putText(fotogramaRGB, self.message, (int(self.posX) - 25, int(self.posY) - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
        
         cv2.rectangle(fotogramaRGB,(w//2-60,h//2-60),(w//2+60,h//2+60),(0,255,0),5)
+        
+        cv2.rectangle(fotogramaRGB,(0,0),(w,self.upPos),(255,0,0),1)
+        cv2.rectangle(fotogramaRGB,(0,h-self.downPos),(w,h),(255,0,0),1)
+        cv2.rectangle(fotogramaRGB,(0,0),(self.leftPos,h),(255,0,0),1)
+        cv2.rectangle(fotogramaRGB,(w-self.rightPos,0),(w,h),(255,0,0),1)
+        cv2.circle(fotogramaRGB, (w//2,h//2),125,(0,0,255),1)
+
+
         ROIRGB = cv2.cvtColor(self.ROI, cv2.COLOR_BGR2RGB)
         self.SetImages(fotogramaRGB,self.qlabel)
         self.SetImages(ROIRGB,self.labelCalibration)

@@ -2,7 +2,7 @@ import numpy as np
 import cv2 as cv
 import mouse
 import win32api,win32con
-
+import keyboard
 # win32api.SetCursorPos((x,y))
 #SCREEN SIZE
 # ix,iy = 640,480
@@ -28,24 +28,73 @@ def MoveMouse(posX,width,posY,height):
     # win32api.SetCursorPos((int(px*1920),int(py*1080)))
     # mouse.move(px*1920,py*1080)
 
+class inputStates:
+    def __init__(self):
+        self.canSendInput = False
+    def EvalInputs(self,posX,width,posY,height,up,down,left,right,radius):
+
+        isInDeadZone = self.CheckIfDeadZone(posX,posY,width,height,radius)
+        if isInDeadZone:
+            self.canSendInput = True
+
+        vertical = self.CheckVertical(posY,height,up,down)
+        horizontal = self.CheckHorizontal(posX,width,left,right)
+        if self.canSendInput:
+            if vertical > 0:
+                print("UP")
+                keyboard.press('up')
+                keyboard.release('up')      
+                self.canSendInput = False
+                return
+            elif vertical < 0:
+                print("DOWN")
+                keyboard.press('down')
+                keyboard.release('down')  
+                self.canSendInput = False
+                return
+            if horizontal > 0:
+                print("RIGHT")
+                keyboard.press('right')
+                keyboard.release('right')  
+                self.canSendInput = False
+                return
+            elif horizontal<0:
+                print("LEFT")
+                keyboard.press('left')
+                keyboard.release('left')  
+                self.canSendInput = False
+                return
+
+            
+
+    def CheckIfDeadZone(self,posX,posY,width,height,radius):
+        cx = width//2
+        cy = height//2
+        distance = np.sqrt((posX-cx)**2 + (posY-cy)**2)
+        if distance < radius:
+            return True
+        else:
+            return False
+
+    def CheckVertical(self,posY,height,up,down):
+        if posY < up:
+            return 1
+        elif posY > (height-down):
+            return -1
+        else:
+            return 0
+
+
+    def CheckHorizontal(self,posX,width,left,right):
+        if posX < left:
+            return -1
+        elif posX > (width-right):
+            return 1
+        else:
+            return 0
+
+
+
 def normMousePos(x,width,y,height):
     # return x/width,y/height
     return x/width,y/height
-#print in screen the values of the mouse position
-# def print_value(x,y,vx,vy):
-#     position= 'x:'+ str(round(vx,nd)) + ', y:' + str(round(vy,2))
-#     cv.putText(img, position, (x,y), cv.FONT_HERSHEY_SIMPLEX, 0.7, (255,0,0), 1)
-    
-        
-# Create a black image, a window and bind the function to window
-
-
-# img = np.zeros((iy,ix,3), np.uint8)
-# cv.namedWindow('image')
-# cv.setMouseCallback('image',click_mouse)
-# while(1):
-#     cv.imshow('image',img)
-#     ch=0xFF & cv.waitKey()
-#     if ch==ord('q'):
-#         break
-# cv.destroyAllWindows()
