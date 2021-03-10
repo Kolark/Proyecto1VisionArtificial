@@ -1,121 +1,108 @@
-from PyQt5 import uic, QtWidgets, QtGui
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtGui import QImage
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import QTimer
 import cv2
 import numpy as np
-from collections import deque
+import keyboard
 
-# importar las clases que hicimos
-from clases.calibration import Calibration
-from clases.segmentation import Segmentation
-from clases.Tools import Characteristics
-
-# .ui file path
-uiFile = "./ui/MainUI.ui"
-# Load ui file
-Ui_MainWindow, QtBaseClass = uic.loadUiType(uiFile)
-# Capture video
-captura = cv2.VideoCapture(0)
+from clases.tools import Characteristics
+from clases.keyboard_controller import KeyboardController
 
 
-class UIWindow(QtWidgets.QMainWindow, Ui_MainWindow):
-    def __init__(self):
-        QtWidgets.QMainWindow.__init__(self)
-        Ui_MainWindow.__init__(self)
-        self.setupUi(self)
-        self.btnCalibrar.clicked.connect(self.calibrate)
-        self.timer = QTimer()
-        self.btnEmpezar.clicked.connect(self.control_timer)
-        self.timer.timeout.connect(self.view_cam)
-        self.hasCalibrated = False
-        self.ftgmas = deque()
+LEFT = 0
+RIGHT = 1
 
-    def calibrate(self):
-        self.HSVMIN, self.HSVMAX = Calibration.calibrate(
-            self.ROI)
-        self.labelhuemin.setText(str(self.HSVMIN[0]))
-        self.labelhuemax.setText(str(self.HSVMAX[0]))
-        self.labelsatmin.setText(str(self.HSVMIN[1]))
-        self.labelsatmax.setText(str(self.HSVMAX[1]))
-        self.labelvalmin.setText(str(self.HSVMIN[2]))
-        self.labelvalmax.setText(str(self.HSVMAX[2]))
-        self.labelcolormin.setStyleSheet(
-            f"background-color: hsv({self.HSVMIN[0]*2},{self.HSVMIN[1]},{self.HSVMIN[2]})")
-        self.labelcolormax.setStyleSheet(
-            f"background-color: hsv({self.HSVMAX[0]*2},{self.HSVMAX[1]},{self.HSVMAX[2]})")
-        self.hasCalibrated = True
-        self.segment = Segmentation(
-            *self.HSVMIN, *self.HSVMAX)
+WIDTH = HEIGHT = 0
 
-    def view_cam(self):
-        # read imageS in BGR format
-        disponible, fotograma = captura.read()
-        fotograma = cv2.flip(fotograma, 1)
-
-        # fotograma = Clases.tools.Quality.makebetter(fotograma)
-
-        h, w, channel = fotograma.shape
-        self.ROI = np.array(fotograma[h//2-60:h//2+60, w//2-60:w//2+60])
-
-        if len(self.ftgmas) < 5:
-            self.ftgmas.append(self.ROI)
-
-        else:
-            self.ftgmas.popleft()
-            self.ftgmas.append(self.ROI)
-
-        # convert image to RGB format
-        fotogramaRGB = cv2.cvtColor(fotograma, cv2.COLOR_BGR2RGB)
-        if self.hasCalibrated:
-            self.segmentedIMG = self.segment.segmentate(fotograma)
-            self.posX, self.posY, self.message = Characteristics.findCentroid(
-                self.segmentedIMG)
-
-            if self.message != "Centroid Not Found":
-                # print("posx : " + str(self.posX))
-                Clases.mousepos.MoveMouse(self.posX, w, self.posY, h)
-                # Clases.mousepos.MoveMouse(w//2,w,h//2,h)
-
-            cv2.circle(fotogramaRGB, (int(self.posX), int(
-                self.posY)), 5, (255, 255, 255), -1)
-            cv2.putText(fotogramaRGB, self.message, (int(
-                self.posX) - 25, int(self.posY) - 25), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
-
-        cv2.rectangle(fotogramaRGB, (w//2-60, h//2-60),
-                      (w//2+60, h//2+60), (0, 255, 0), 5)
-        ROIRGB = cv2.cvtColor(self.ROI, cv2.COLOR_BGR2RGB)
-        self.set_images(fotogramaRGB, self.qlabel)
-        self.set_images(ROIRGB, self.labelCalibration)
-
-    def set_images(self, IMG, label):
-        h, w, channel = IMG.shape
-        step = channel * w
-
-        qImg = QImage(IMG.data, w, h, step, QImage.Format_RGB888)
-        label.setPixmap(QPixmap.fromImage(qImg))
-
-    def control_timer(self):
-        # if timer is stopped
-        if not self.timer.isActive():
-            # create video capture
-            self.cap = cv2.VideoCapture(0)
-            # start timer
-            self.timer.start(16)
-            # update control_bt text
-            self.btnEmpezar.setText("Parar")
-        else:
-            # stop timer
-            self.timer.stop()
-            # release video capture
-            self.cap.release()
-            # update control_bt text
-            self.btnEmpezar.setText("Empezar")
+LEFT_PORCENT = 30
+RIGHT_PORCENT = 30
+BOTTON_PORCENT = 30
 
 
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    window = UIWindow()
-    window.show()
-    sys.exit(app.exec_())
+last_side = None
+
+
+camera = cv2.VideoCapture(0)
+
+# Start
+available, frame = camera.read()
+
+if available:
+    HEIGHT, WIDTH, _ = frame.shape
+
+
+# Update
+while True:
+    available, frame = camera.read()
+
+    if not available:
+        print("Cámara no disponible")
+        break
+
+    frame = cv2.flip(frame, 1)
+
+    # Límite izquierdo
+    cv2.line(frame, (LEFT_PORCENT * WIDTH // 100, 0),
+             (LEFT_PORCENT * WIDTH // 100, HEIGHT), (0, 255, 0), 3)
+    # Límite derecho
+    cv2.line(frame, (WIDTH - RIGHT_PORCENT *
+                     WIDTH // 100, 0), (WIDTH - RIGHT_PORCENT *
+                                        WIDTH // 100, HEIGHT), (0, 255, 0), 3)
+    # Límite inferior
+    cv2.line(frame, (0, HEIGHT - BOTTON_PORCENT * HEIGHT // 100),
+             (WIDTH, HEIGHT - BOTTON_PORCENT * HEIGHT // 100), (0, 255, 0), 3)
+
+    # Convertirlo a escala de grises
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    x, y, w, h = Characteristics.find_face(gray)
+
+    # Recuadro de la cara
+    cv2.rectangle(gray, (x, y), (x + w, y + h), (255, 255, 255), 2)
+
+    center = ((x + w)//2, (y + h)//2)
+
+    # # Si tiene el rostro en el centro
+    # if center[0] > LEFT_PORCENT * WIDTH // 100 and \
+    #         center[0] < WIDTH - RIGHT_PORCENT * WIDTH // 100 and \
+    #         center[1] > HEIGHT - BOTTON_PORCENT * HEIGHT // 100:
+
+    #     if keyboard.is_pressed('left'):
+    #         keyboard.release('left')
+    #     if keyboard.is_pressed('right'):
+    #         keyboard.release('right')
+    #     if keyboard.is_pressed('space'):
+    #         keyboard.release('space')
+
+    # # Si tiene el rostro en la parte izquierda
+    # elif center[0] < LEFT_PORCENT * WIDTH // 100:
+
+    #     last_side = LEFT
+    #     keyboard.press('left')
+    #     keyboard.release('space')
+
+    # # Si tiene el rostro en la parte derecha
+    # elif center[0] > WIDTH - RIGHT_PORCENT * WIDTH // 100:
+
+    #     last_side = RIGHT
+    #     keyboard.press('right')
+    #     keyboard.release('space')
+
+    # # Si tiene el rostro en la parte inferior
+    # elif center[1] < HEIGHT - BOTTON_PORCENT * HEIGHT // 100:
+
+    #     if last_side == LEFT:
+    #         keyboard.press('left')
+    #     elif last_side == RIGHT:
+    #         keyboard.press('right')
+
+    #     keyboard.press('space')
+
+    cv2.imshow("Captura", gray)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        keyboard.release('space')
+        keyboard.release('left')
+        keyboard.release('right')
+        break
+
+camera.release()
+
+cv2.destroyAllWindows()
