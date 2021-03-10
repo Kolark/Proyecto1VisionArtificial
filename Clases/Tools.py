@@ -1,5 +1,4 @@
 import cv2
-import numpy as np
 
 face_cascade = cv2.CascadeClassifier(
     cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
@@ -19,7 +18,7 @@ class Characteristics:
 
         faces = face_cascade.detectMultiScale(frame, 1.3, 5)
         if len(faces) > 0:
-            return faces[0]
+            return *faces[0], True
         else:
             h, w = frame.shape
-            return (w//2, h//2, 0, 0)
+            return (w//2, h//2, 0, 0, False)
