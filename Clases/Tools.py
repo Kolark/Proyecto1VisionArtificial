@@ -10,10 +10,10 @@ class Characteristics:
     @staticmethod
     def find_face(frame):
         """
-        Método para encontrar un rostro de una imagen
+        Método para encontrar un rostro en una imagen
 
         :param frame: imagen en donde están los rostros
-        :returns: posición en x, y, ancho y alto 
+        :returns: posición en x, y, ancho, alto y si encontró rostro
         """
 
         faces = face_cascade.detectMultiScale(frame, 1.3, 5)
