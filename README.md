@@ -23,7 +23,7 @@ Branch: Implementación Felipe
 
 
 **Friday Night Funkin**
-Se usa la posición del objeto con respecto a la camara para gestionar los inputs, Arriba,Abajo,Izquierda,Derecha. A diferencia del anterior la "zona muerta" es diferente y la manera que trata los inputs tambien. 
+Se usa la posición del objeto con respecto a la camara para gestionar los inputs, Arriba,Abajo,Izquierda,Derecha. A diferencia del anterior la "zona muerta" es diferente y la manera que trata los inputs. 
 Branch: FelipeV2
 
 
