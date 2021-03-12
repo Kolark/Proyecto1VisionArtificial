@@ -19,6 +19,10 @@ Una vez terminado el proyecto base se testeo sobre el juego planteado "Getting O
 
 **2048**
 Se usa la posición del objeto con respecto a la camara para gestionar los inputs, Arriba,Abajo,Izquierda,Derecha.
+
+
 **Friday Night Funkin**
 Se usa la posición del objeto con respecto a la camara para gestionar los inputs, Arriba,Abajo,Izquierda,Derecha. A diferencia del anterior la "zona muerta" es diferente y la manera que trata los inputs tambien.
+
+
 **Jump King**
