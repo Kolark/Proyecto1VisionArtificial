@@ -102,7 +102,7 @@ class UIWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         cv2.rectangle(fotogramaRGB,(0,h-self.downPos),(w,h),(255,0,0),1)
         cv2.rectangle(fotogramaRGB,(0,0),(self.leftPos,h),(255,0,0),1)
         cv2.rectangle(fotogramaRGB,(w-self.rightPos,0),(w,h),(255,0,0),1)
-        cv2.circle(fotogramaRGB, (w//2,h//2),125,(0,0,255),1)
+        # cv2.circle(fotogramaRGB, (w//2,h//2),125,(0,0,255),1)
 
 
         ROIRGB = cv2.cvtColor(self.ROI, cv2.COLOR_BGR2RGB)
