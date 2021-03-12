@@ -31,40 +31,69 @@ def MoveMouse(posX,width,posY,height):
 class inputStates:
     def __init__(self):
         self.canSendInput = False
+        self.currentInput = ""
+        self.upb = False
+        self.downb = False
+        self.leftb= False
+        self.rightb = False
     def EvalInputs(self,posX,width,posY,height,up,down,left,right,radius):
 
-        isInDeadZone = self.CheckIfDeadZone(posX,posY,width,height,radius)
-        if isInDeadZone:
-            self.canSendInput = True
+        # isInDeadZone = self.CheckIfDeadZone(posX,posY,width,height,radius)
+        
 
         vertical = self.CheckVertical(posY,height,up,down)
         horizontal = self.CheckHorizontal(posX,width,left,right)
-        if self.canSendInput:
-            if vertical > 0:
+            
+        if vertical > 0:
+            if True:
                 print("UP")
                 keyboard.press('up')
-                keyboard.release('up')      
+                self.currentInput='up'     
                 self.canSendInput = False
+                self.upb = True
                 return
-            elif vertical < 0:
+        else:
+            self.upb = False
+        if vertical < 0:
+            if True:
                 print("DOWN")
                 keyboard.press('down')
-                keyboard.release('down')  
+                self.currentInput='down'
                 self.canSendInput = False
+                self.downb = True
                 return
-            if horizontal > 0:
+        else:
+            self.downb = False
+            
+        if horizontal > 0:
+            if True:
                 print("RIGHT")
                 keyboard.press('right')
-                keyboard.release('right')  
+                self.currentInput='right'
                 self.canSendInput = False
+                self.rightb = True
                 return
-            elif horizontal<0:
+        else:
+            self.rightb = False
+            
+
+        if horizontal<0:
+            if True:
                 print("LEFT")
                 keyboard.press('left')
-                keyboard.release('left')  
+                self.currentInput='left'
                 self.canSendInput = False
+                self.leftb = True
                 return
-
+        else:
+            self.leftb = False
+                
+        if (not self.upb) and (not self.downb) and (not self.leftb) and (not self.rightb):
+            if self.currentInput is not "":
+                keyboard.release(self.currentInput) 
+                print("Released " + self.currentInput)
+                self.currentInput = ""
+            self.canSendInput = True
             
 
     def CheckIfDeadZone(self,posX,posY,width,height,radius):
