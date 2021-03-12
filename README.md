@@ -14,6 +14,12 @@ La primera propuesta para el proyecto fue hacer un programa en el que pudiera ca
 Una vez terminado el proyecto base se testeo sobre el juego planteado "Getting Over It" pero nos dimos cuenta que los inputs del juego no funcionaban como esperamos, aqui decidimos pivotear a juegos propuestos anteriormente, ya para la implementación propia.
 
 
+**INSTRUCCIONES:**
+Ejecutar el .exe o el main.py, 
+**Empezar**: para prender la camara.
+**Calibrar**: Poner el objeto en el recuadro indicado. y presionar el boton de calibrar para iniciar el tracking del objeto.
+
+
 **Implementaciones:  **
 
 
